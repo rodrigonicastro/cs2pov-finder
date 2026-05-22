@@ -1,0 +1,196 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(91, 106, 240, 0.18) 0%, transparent 70%),
+    #14171f;
+}
+
+.card {
+  background: #16192380;
+  backdrop-filter: blur(12px);
+  border: 1px solid #ffffff0f;
+  border-radius: 16px;
+  padding: 2.75rem 2.25rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 24px 64px #00000066;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.logoIcon {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #5b6af0, #8b5cf6);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.title {
+  color: #f0f1f8;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.hint {
+  color: #6b7091;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field label {
+  color: #9da2c0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.field input {
+  background: #0d0f18;
+  border: 1px solid #ffffff12;
+  border-radius: 9px;
+  color: #e8eaf0;
+  font-size: 0.9375rem;
+  padding: 0.7rem 0.875rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.field input:focus {
+  border-color: #5b6af0;
+  box-shadow: 0 0 0 3px rgba(91, 106, 240, 0.18);
+}
+
+.field input::placeholder {
+  color: #3a3e56;
+}
+
+.submit {
+  background: linear-gradient(135deg, #5b6af0, #7c6af0);
+  border: none;
+  border-radius: 9px;
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  padding: 0.75rem;
+  width: 100%;
+  margin-top: 0.25rem;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.01em;
+}
+
+.submit:hover {
+  opacity: 0.9;
+}
+
+.submit:active {
+  transform: scale(0.985);
+}
+
+.otpInput {
+  background: #0d0f18;
+  border: 1px solid #ffffff12;
+  border-radius: 9px;
+  color: #e8eaf0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  padding: 0.65rem 0.875rem;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.otpInput:focus {
+  border-color: #5b6af0;
+  box-shadow: 0 0 0 3px rgba(91, 106, 240, 0.18);
+}
+
+.otpInput::placeholder { color: #3a3e56; }
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9da2c0;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember input[type='checkbox'] {
+  accent-color: #5b6af0;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.error {
+  color: #f87171;
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.toggle {
+  margin-top: 1.25rem;
+  text-align: center;
+  color: #6b7091;
+  font-size: 0.8125rem;
+}
+
+.toggle button {
+  background: none;
+  border: none;
+  color: #5b6af0;
+  font-size: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.toggle button:hover {
+  color: #8b9af8;
+}
+
+.back {
+  background: none;
+  border: none;
+  color: #5b6af0;
+  font-size: 0.8125rem;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+  transition: color 0.15s;
+}
+
+.back:hover {
+  color: #8b9af8;
+}

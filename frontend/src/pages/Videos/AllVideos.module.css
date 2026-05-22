@@ -1,0 +1,40 @@
+.filterRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.25rem 2rem 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.roleFilters {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sideSelect {
+  background: #0d0f18;
+  border: 1px solid #ffffff12;
+  border-radius: 7px;
+  color: #c4c7d6;
+  font-size: 0.8125rem;
+  padding: 0.4rem 0.75rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.sideSelect:focus { border-color: #5b6af0; }
+.sideSelect:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.faceitWarning {
+  max-width: 1400px;
+  margin: 0.75rem auto 0;
+  padding: 0.6rem 2rem;
+  color: #f0b429;
+  font-size: 0.8rem;
+  text-align: center;
+}

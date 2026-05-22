@@ -1,0 +1,175 @@
+.wrapper {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.state {
+  padding: 4rem;
+  text-align: center;
+  color: #6b7091;
+  font-size: 0.9375rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.125rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #16192380;
+  border: 3px solid #ffffff22;
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.card:hover {
+  border-color: #5b6af033;
+  transform: translateY(-2px);
+}
+
+.thumbnail {
+  aspect-ratio: 16 / 9;
+  background: #12141c;
+  overflow: hidden;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.card:hover .thumbnail img {
+  transform: scale(1.03);
+}
+
+.noThumb {
+  width: 100%;
+  height: 100%;
+  background: #1a1d27;
+}
+
+.info {
+  padding: 0.5rem 0.75rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #c4c7d6;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.mapChip {
+  background: #2e2e35;
+  border: 1px solid #ffffff66;
+  color: #ffffff;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.faceit {
+  background: #2a1500;
+  border: 1px solid #f97316aa;
+  color: #fb923c;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.tournament {
+  background: #0a1f0f;
+  border: 1px solid #4ade8066;
+  color: #86efac;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.tRole {
+  background: #2a240a;
+  border: 1px solid #f5d76e33;
+  color: #f5d76e;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.ctRole {
+  background: #0a1a2e;
+  border: 1px solid #4a90d966;
+  color: #7bb8f0;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.pagination button {
+  background: #1a1d27;
+  border: 1px solid #ffffff12;
+  border-radius: 8px;
+  color: #c4c7d6;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1.125rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #22263a;
+  border-color: #5b6af066;
+}
+
+.pagination button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: #6b7091;
+  font-size: 0.875rem;
+  min-width: 60px;
+  text-align: center;
+}
