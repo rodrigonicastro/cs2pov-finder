@@ -23,7 +23,7 @@ class MatchType(enum.Enum):
 class ExperienceLevel(enum.Enum):
     casual = "casual"
     amateur = "amateur"
-    semi_pro = "semi-pro"
+    semi_pro = "semi_pro"
     pro = "pro"
     coach = "coach"
     content_creator = "content_creator"
