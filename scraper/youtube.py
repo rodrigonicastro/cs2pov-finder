@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import re
@@ -124,15 +125,15 @@ async def poll(session: AsyncSession) -> None:
     maps = (await session.execute(select(Map))).scalars().all()
 
     since = datetime.utcnow() - timedelta(days=90)
-    youtube = _client()
+    youtube = await asyncio.to_thread(_client)
 
     for channel_id in channel_ids:
         try:
-            playlist_id = _uploads_playlist_id(youtube, channel_id)
+            playlist_id = await asyncio.to_thread(_uploads_playlist_id, youtube, channel_id)
         except (KeyError, IndexError):
             log.warning("Channel %s not found or returned no data — skipping", channel_id)
             continue
-        new_videos = _fetch_new_videos(youtube, playlist_id, known_ids, since)
+        new_videos = await asyncio.to_thread(_fetch_new_videos, youtube, playlist_id, known_ids, since)
 
         for v in new_videos:
             player = _match_player(v["title"], players)
