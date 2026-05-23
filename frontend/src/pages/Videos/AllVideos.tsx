@@ -60,15 +60,17 @@ export default function AllVideos() {
     setPage(1)
   }
 
-  function handleTRoleChange(ids: number[]) {
-    setSelectedTRoleIds(ids)
-    setFilters(f => ({ ...f, tRoleIds: ids.length ? ids : undefined }))
+  function handleTRoleChange(ids: (string | number)[]) {
+    const numIds = ids.map(Number)
+    setSelectedTRoleIds(numIds)
+    setFilters(f => ({ ...f, tRoleIds: numIds.length ? numIds : undefined }))
     setPage(1)
   }
 
-  function handleCtRoleChange(ids: number[]) {
-    setSelectedCtRoleIds(ids)
-    setFilters(f => ({ ...f, ctRoleIds: ids.length ? ids : undefined }))
+  function handleCtRoleChange(ids: (string | number)[]) {
+    const numIds = ids.map(Number)
+    setSelectedCtRoleIds(numIds)
+    setFilters(f => ({ ...f, ctRoleIds: numIds.length ? numIds : undefined }))
     setPage(1)
   }
 
