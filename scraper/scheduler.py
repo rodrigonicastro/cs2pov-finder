@@ -27,9 +27,12 @@ async def _run_skybox() -> None:
 
 async def _run_youtube() -> None:
     log.info("YouTube poller starting")
-    async with AsyncSessionLocal() as session:
-        await youtube.poll(session)
-    log.info("YouTube poller done")
+    try:
+        async with AsyncSessionLocal() as session:
+            await youtube.poll(session)
+        log.info("YouTube poller done")
+    except Exception:
+        log.exception("YouTube poller failed")
 
 
 async def main() -> None:

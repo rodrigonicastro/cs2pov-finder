@@ -129,15 +129,26 @@ async def poll(session: AsyncSession) -> None:
     maps = (await session.execute(select(Map))).scalars().all()
 
     since = datetime.utcnow() - timedelta(days=90)
+    log.info("Building YouTube client")
     youtube = await asyncio.to_thread(_client)
 
     for channel_id in channel_ids:
+        log.info("Polling channel %s", channel_id)
         try:
             playlist_id = await asyncio.to_thread(_uploads_playlist_id, youtube, channel_id)
         except (KeyError, IndexError):
             log.warning("Channel %s not found or returned no data — skipping", channel_id)
             continue
-        new_videos = await asyncio.to_thread(_fetch_new_videos, youtube, playlist_id, known_ids, since)
+        except Exception:
+            log.exception("Failed to get uploads playlist for channel %s — skipping", channel_id)
+            continue
+        log.info("Fetching new videos for channel %s (playlist %s)", channel_id, playlist_id)
+        try:
+            new_videos = await asyncio.to_thread(_fetch_new_videos, youtube, playlist_id, known_ids, since)
+        except Exception:
+            log.exception("Failed to fetch videos for channel %s — skipping", channel_id)
+            continue
+        log.info("Found %d new video(s) for channel %s", len(new_videos), channel_id)
 
         for v in new_videos:
             player = _match_player(v["title"], players)
@@ -166,3 +177,4 @@ async def poll(session: AsyncSession) -> None:
             known_ids.add(v["youtube_video_id"])
 
     await session.commit()
+    log.info("Poll complete")
