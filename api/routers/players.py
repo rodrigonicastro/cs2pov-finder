@@ -57,6 +57,8 @@ async def players_in_my_videos(
     email: str = Query(...),
     map: list[str] = Query(default=[]),
     match_type: str | None = Query(None),
+    t_role_id: list[int] = Query(default=[]),
+    ct_role_id: list[int] = Query(default=[]),
     session: AsyncSession = Depends(get_session),
 ):
     user = (await session.execute(select(User).where(User.email == email))).scalar_one_or_none()
@@ -79,6 +81,10 @@ async def players_in_my_videos(
         conditions.append(or_(Video.t_role_id.in_(map_role_ids), Video.ct_role_id.in_(map_role_ids)))
     if match_type:
         conditions.append(Video.match_type == MatchType[match_type])
+    if t_role_id:
+        conditions.append(Video.t_role_id.in_(t_role_id))
+    if ct_role_id:
+        conditions.append(Video.ct_role_id.in_(ct_role_id))
 
     player_ids = select(distinct(Video.player_id)).where(and_(*conditions))
     rows = (await session.execute(

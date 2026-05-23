@@ -99,6 +99,8 @@ async def my_videos(
     page_size: int = Query(20, ge=1, le=100),
     map: list[str] = Query(default=[]),
     match_type: str | None = Query(None),
+    t_role_id: list[int] = Query(default=[]),
+    ct_role_id: list[int] = Query(default=[]),
     player_id: int | None = Query(None),
     session: AsyncSession = Depends(get_session),
 ):
@@ -119,6 +121,10 @@ async def my_videos(
         conditions.append(map_filter_condition(map))
     if match_type:
         conditions.append(Video.match_type == MatchType[match_type])
+    if t_role_id:
+        conditions.append(Video.t_role_id.in_(t_role_id))
+    if ct_role_id:
+        conditions.append(Video.ct_role_id.in_(ct_role_id))
     if player_id is not None:
         conditions.append(Video.player_id == player_id)
 

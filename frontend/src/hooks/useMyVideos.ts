@@ -21,7 +21,7 @@ export function useMyVideos(page: number, pageSize: number, filters: VideoFilter
       .then(data => { if (!cancelled) setState({ ...data, loading: false, error: null }) })
       .catch(err => { if (!cancelled) setState(s => ({ ...s, loading: false, error: err.message })) })
     return () => { cancelled = true }
-  }, [email, page, pageSize, filters.maps?.join(','), filters.matchType, filters.playerId])
+  }, [email, page, pageSize, filters.maps?.join(','), filters.matchType, filters.tRoleIds?.join(','), filters.ctRoleIds?.join(','), filters.playerId])
 
   return state
 }

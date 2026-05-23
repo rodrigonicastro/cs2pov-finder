@@ -57,6 +57,23 @@ export async function fetchMyVideos(email: string, page: number, pageSize: numbe
   return res.json()
 }
 
+export async function fetchPlayersInMyVideos(
+  email: string,
+  maps: string[] = [],
+  matchType?: string,
+  tRoleIds: number[] = [],
+  ctRoleIds: number[] = [],
+): Promise<PlayerOption[]> {
+  const p = new URLSearchParams({ email })
+  maps.forEach(m => p.append('map', m))
+  if (matchType) p.set('match_type', matchType)
+  tRoleIds.forEach(id => p.append('t_role_id', String(id)))
+  ctRoleIds.forEach(id => p.append('ct_role_id', String(id)))
+  const res = await fetch(`${API_BASE}/api/players/in-my-videos?${p}`)
+  if (!res.ok) throw new Error('Failed to fetch players')
+  return res.json()
+}
+
 export async function fetchMaps(): Promise<string[]> {
   const res = await fetch(`${API_BASE}/api/maps`)
   if (!res.ok) throw new Error('Failed to fetch maps')
@@ -87,19 +104,6 @@ export async function fetchPlayersInVideos(
   tRoleIds.forEach(id => p.append('t_role_id', String(id)))
   ctRoleIds.forEach(id => p.append('ct_role_id', String(id)))
   const res = await fetch(`${API_BASE}/api/players/in-videos?${p}`)
-  if (!res.ok) throw new Error('Failed to fetch players')
-  return res.json()
-}
-
-export async function fetchPlayersInMyVideos(
-  email: string,
-  maps: string[] = [],
-  matchType?: string,
-): Promise<PlayerOption[]> {
-  const p = new URLSearchParams({ email })
-  maps.forEach(m => p.append('map', m))
-  if (matchType) p.set('match_type', matchType)
-  const res = await fetch(`${API_BASE}/api/players/in-my-videos?${p}`)
   if (!res.ok) throw new Error('Failed to fetch players')
   return res.json()
 }
