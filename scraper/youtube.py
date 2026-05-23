@@ -1,6 +1,9 @@
+import logging
 import os
 import re
 from datetime import datetime, timedelta
+
+log = logging.getLogger(__name__)
 
 from googleapiclient.discovery import build
 from sqlalchemy import select
@@ -124,7 +127,11 @@ async def poll(session: AsyncSession) -> None:
     youtube = _client()
 
     for channel_id in channel_ids:
-        playlist_id = _uploads_playlist_id(youtube, channel_id)
+        try:
+            playlist_id = _uploads_playlist_id(youtube, channel_id)
+        except (KeyError, IndexError):
+            log.warning("Channel %s not found or returned no data — skipping", channel_id)
+            continue
         new_videos = _fetch_new_videos(youtube, playlist_id, known_ids, since)
 
         for v in new_videos:
