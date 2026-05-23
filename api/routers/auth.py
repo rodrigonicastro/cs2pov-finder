@@ -50,11 +50,11 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 # Role → player IDs seeded into user_players on registration
 ROLE_PLAYER_IDS: dict[str, list[int]] = {
-    'Entry Fragger/Playmaker': [2, 23, 21, 61, 77],
-    'AWPer': [3, 13, 5, 32, 16],
-    'Anchor': [87, 50, 110, 95, 42],
-    'Lurker': [14, 19, 29, 66, 62],
-    'IGL': [116, 150, 53, 113, 96],
+    'Entry Fragger/Playmaker': [2677, 3279, 2858, 2808, 3057],
+    'AWPer': [2700, 2679, 2746, 2850, 2739],
+    'Anchor': [3021, 3434, 3516, 3549, 2991],
+    'Lurker': [2764, 2774, 3075, 2787, 3406],
+    'IGL': [4212, 2984, 3709, 3994, 4448],
 }
 
 # Map frontend labels to DB enum values
