@@ -9,6 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import Map, MapRole, Player, PlayerRole, Side
 
+_BATCH_SIZE = 500  # stay well under asyncpg's 32767 parameter limit
+
 _API_URL = "https://edge.skybox.gg/api"
 _PAGE_SIZE = 50
 _LOOKBACK_DAYS = 90
@@ -129,8 +131,9 @@ async def scrape(session: AsyncSession, team_id: str | None = None, steam_ids: l
                 seen_map_role_keys.add(key)
                 map_role_rows.append({"map_id": map_obj.id, "side": Side[pr["teamSide"]], "name": role_name})
 
+    for i in range(0, len(map_role_rows), _BATCH_SIZE):
+        await session.execute(insert(MapRole).values(map_role_rows[i:i + _BATCH_SIZE]).on_conflict_do_nothing())
     if map_role_rows:
-        await session.execute(insert(MapRole).values(map_role_rows).on_conflict_do_nothing())
         await session.flush()
 
     # --- 2. Load map_roles index: (map_id, side, name) -> map_role.id ---
@@ -142,22 +145,27 @@ async def scrape(session: AsyncSession, team_id: str | None = None, steam_ids: l
     # --- 3. Upsert players ---
     player_rows: list[dict] = []
     seen_steam_ids: set[str] = set()
+    seen_names: set[str] = set()
     for entry in entries:
         sid = entry["steamId"]
-        if sid in seen_steam_ids:
+        name = entry["playerHandle"]
+        if sid in seen_steam_ids or name in seen_names:
             continue
         seen_steam_ids.add(sid)
+        seen_names.add(name)
         team = entry["publicMatchTeams"][0]["name"] if entry["publicMatchTeams"] else None
-        player_rows.append({"steam_id": sid, "name": entry["playerHandle"], "team": team})
+        player_rows.append({"steam_id": sid, "name": name, "team": team})
 
-    stmt = insert(Player).values(player_rows)
-    await session.execute(
-        stmt.on_conflict_do_update(
-            index_elements=["steam_id"],
-            set_={"name": stmt.excluded.name, "team": stmt.excluded.team, "updated_at": now},
+    for i in range(0, len(player_rows), _BATCH_SIZE):
+        stmt = insert(Player).values(player_rows[i:i + _BATCH_SIZE])
+        await session.execute(
+            stmt.on_conflict_do_update(
+                index_elements=["steam_id"],
+                set_={"name": stmt.excluded.name, "team": stmt.excluded.team, "updated_at": now},
+            )
         )
-    )
-    await session.flush()
+    if player_rows:
+        await session.flush()
 
     # --- 4. Load players index: steam_id -> player.id ---
     players_index: dict[str, int] = {
@@ -192,8 +200,8 @@ async def scrape(session: AsyncSession, team_id: str | None = None, steam_ids: l
                 seen_player_role_keys.add(key)
                 player_role_rows.append({"player_id": player_id, "map_role_id": map_role_id, "last_scraped_at": now})
 
-    if player_role_rows:
-        pr_stmt = insert(PlayerRole).values(player_role_rows)
+    for i in range(0, len(player_role_rows), _BATCH_SIZE):
+        pr_stmt = insert(PlayerRole).values(player_role_rows[i:i + _BATCH_SIZE])
         await session.execute(
             pr_stmt.on_conflict_do_update(
                 index_elements=["player_id", "map_role_id"],
