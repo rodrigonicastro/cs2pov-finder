@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 
 log = logging.getLogger(__name__)
 
+import httplib2
 from googleapiclient.discovery import build
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
@@ -27,8 +28,11 @@ def _infer_match_type(title: str) -> MatchType | None:
     return None
 
 
+_HTTP_TIMEOUT = 30  # seconds; httplib2 defaults to None (infinite)
+
 def _client():
-    return build("youtube", "v3", developerKey=os.environ["YOUTUBE_API_KEY"], cache_discovery=False)
+    http = httplib2.Http(timeout=_HTTP_TIMEOUT)
+    return build("youtube", "v3", developerKey=os.environ["YOUTUBE_API_KEY"], cache_discovery=False, http=http)
 
 
 def _uploads_playlist_id(youtube, channel_id: str) -> str:
