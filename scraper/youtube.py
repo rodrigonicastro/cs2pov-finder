@@ -155,15 +155,17 @@ async def poll(session: AsyncSession) -> None:
         log.info("Processing %d new video(s) for channel %s:", len(new_videos), channel_id)
         for v in new_videos:
             i += 1
-            log.info("%d/%d", i, len(new_videos))
 
             player = _match_player(v["title"], players)
             map_obj = _match_map(v["title"], maps)
 
             t_role_id, ct_role_id = None, None
             if player and map_obj:
+                log.info("Extracting roles from video #%d", i)
                 t_role_id, ct_role_id = await _role_ids(session, player.id, map_obj.id)
+                log.info("Role extraction for video #%d finished", i)
 
+            log.info("Inserting video #%d", i)
             await session.execute(
                 insert(Video)
                 .values(
@@ -180,6 +182,7 @@ async def poll(session: AsyncSession) -> None:
                 )
                 .on_conflict_do_nothing(index_elements=["youtube_video_id"])
             )
+            log.info("Finished %d/%d", i, len(new_videos))
             known_ids.add(v["youtube_video_id"])
 
         log.info("Finished processing videos for channel %s:", channel_id)
