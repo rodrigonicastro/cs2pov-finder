@@ -150,7 +150,13 @@ async def poll(session: AsyncSession) -> None:
             continue
         log.info("Found %d new video(s) for channel %s", len(new_videos), channel_id)
 
+
+        i = 0
+        log.info("Processing %d new video(s) for channel %s:", len(new_videos), channel_id)
         for v in new_videos:
+            i += 1
+            log.info("%d/%d", i, len(new_videos))
+
             player = _match_player(v["title"], players)
             map_obj = _match_map(v["title"], maps)
 
@@ -175,6 +181,8 @@ async def poll(session: AsyncSession) -> None:
                 .on_conflict_do_nothing(index_elements=["youtube_video_id"])
             )
             known_ids.add(v["youtube_video_id"])
+
+        log.info("Finished processing videos for channel %s:", channel_id)
 
     await session.commit()
     log.info("Poll complete")
