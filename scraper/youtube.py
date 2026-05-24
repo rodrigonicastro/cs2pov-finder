@@ -182,10 +182,10 @@ async def poll(session: AsyncSession) -> None:
                 )
                 .on_conflict_do_nothing(index_elements=["youtube_video_id"])
             )
+            await session.commit()
             log.info("Finished %d/%d", i, len(new_videos))
             known_ids.add(v["youtube_video_id"])
 
         log.info("Finished processing videos for channel %s:", channel_id)
 
-    await session.commit()
     log.info("Poll complete")
