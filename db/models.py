@@ -175,3 +175,13 @@ class UserPlayer(Base):
     player: Mapped["Player"] = relationship()
 
 
+class UserSurvey(Base):
+    __tablename__ = "user_survey"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True)
+    response: Mapped[int] = mapped_column(nullable=False)
+
+    user: Mapped["User"] = relationship()
+
+

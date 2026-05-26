@@ -12,7 +12,7 @@ if _env.exists():
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import auth, videos, roles, maps, players
+from api.routers import auth, videos, roles, maps, players, survey
 
 app = FastAPI(title="CS2 POV Finder API")
 
@@ -34,3 +34,4 @@ app.include_router(videos.router, prefix="/api")
 app.include_router(roles.router, prefix="/api")
 app.include_router(maps.router, prefix="/api")
 app.include_router(players.router, prefix="/api")
+app.include_router(survey.router, prefix="/api")
