@@ -37,6 +37,16 @@ class Notify(enum.Enum):
     yes = "yes"
     no = "no"
 
+class ActivityType(enum.Enum):
+    view_my_videos = "view_my_videos"
+    view_all_videos = "view_all_videos"
+    add_role = "add_role"
+    delete_role = "delete_role"
+    add_player = "add_player"
+    delete_player = "delete_player"
+    view_my_account = "view_my_account"
+    view_preferences = "view_preferences"
+
 class Map(Base):
     __tablename__ = "maps"
 
@@ -64,8 +74,6 @@ class MapRole(Base):
 
     map: Mapped["Map"] = relationship(back_populates="map_roles")
     player_roles: Mapped[list["PlayerRole"]] = relationship(back_populates="map_role", cascade="all, delete-orphan")
-
-
 
 class Player(Base):
     __tablename__ = "players"
@@ -146,6 +154,7 @@ class User(Base):
         Enum(Notify, name="notify_enum"), nullable=True
     )
     preferred_roles: Mapped[list[str]] = mapped_column(ARRAY(Text), server_default="{}")
+    registered_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     user_roles: Mapped[list["UserRole"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     user_players: Mapped[list["UserPlayer"]] = relationship(back_populates="user", cascade="all, delete-orphan")
@@ -185,3 +194,10 @@ class UserSurvey(Base):
     user: Mapped["User"] = relationship()
 
 
+class UserActivity(Base):
+    __tablename__ = "user_activity"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    activity_type: Mapped[ActivityType] = mapped_column(Enum(ActivityType, name="activity_type_enum"), nullable=False)
+    timestamp: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
