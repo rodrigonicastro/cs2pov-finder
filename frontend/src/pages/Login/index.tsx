@@ -155,7 +155,7 @@ export default function Login() {
       <MapRoleSelector
         email={email}
         onBack={() => setStep('questionnaire')}
-        onDone={() => { saveSession(email, username, false); navigate('/videos') }}
+        onDone={() => { saveSession(email, username, false); sessionStorage.setItem('survey_skip', '1'); navigate('/videos') }}
       />
     )
   }
