@@ -25,15 +25,14 @@ activity_type_enum = sa.Enum(
 
 def upgrade() -> None:
     activity_type_enum.create(op.get_bind(), checkfirst=True)
-    op.create_table(
-        'user_activity',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('user_id', sa.Integer(), nullable=False),
-        sa.Column('activity_type', sa.Enum(name='activity_type_enum', create_type=False), nullable=False),
-        sa.Column('timestamp', sa.DateTime(), nullable=False, server_default=sa.text('now()')),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-        sa.PrimaryKeyConstraint('id'),
-    )
+    op.execute("""
+        CREATE TABLE user_activity (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            activity_type activity_type_enum NOT NULL,
+            timestamp TIMESTAMP NOT NULL DEFAULT now()
+        )
+    """)
 
 
 def downgrade() -> None:
