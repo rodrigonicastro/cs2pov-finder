@@ -44,8 +44,10 @@ export async function fetchRolesByMapSide(map: string, side: string): Promise<Ma
   return res.json()
 }
 
-export async function fetchVideos(page: number, pageSize: number, filters: VideoFilters = {}): Promise<VideoPage> {
-  const res = await fetch(`${API_BASE}/api/videos?${buildParams(page, pageSize, filters)}`)
+export async function fetchVideos(page: number, pageSize: number, filters: VideoFilters = {}, email?: string): Promise<VideoPage> {
+  const params = buildParams(page, pageSize, filters)
+  const emailParam = email ? `&email=${encodeURIComponent(email)}` : ''
+  const res = await fetch(`${API_BASE}/api/videos?${params}${emailParam}`)
   if (!res.ok) throw new Error(`Failed to fetch videos (${res.status})`)
   return res.json()
 }

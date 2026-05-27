@@ -5,6 +5,7 @@ import VideoFilterBar from '../../components/ui/VideoFilterBar'
 import VideoGrid from '../../components/ui/VideoGrid'
 import { useVideos } from '../../hooks/useVideos'
 import { fetchRolesBySide, fetchPlayersInVideos, type MapSideRole, type PlayerOption, type VideoFilters } from '../../services/videos'
+import { getEmail } from '../../utils/auth'
 import styles from './AllVideos.module.css'
 
 const PAGE_SIZE = 20
@@ -23,7 +24,7 @@ export default function AllVideos() {
   const [selectedCtRoleIds, setSelectedCtRoleIds] = useState<number[]>([])
   const [players, setPlayers] = useState<PlayerOption[]>([])
 
-  const { videos, total, loading, error } = useVideos(page, PAGE_SIZE, filters)
+  const { videos, total, loading, error } = useVideos(page, PAGE_SIZE, filters, getEmail())
 
   const mapsKey = filters.maps?.join(',') ?? ''
 
