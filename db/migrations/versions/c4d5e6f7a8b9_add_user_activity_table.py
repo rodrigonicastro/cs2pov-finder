@@ -16,20 +16,15 @@ down_revision: Union[str, None] = 'b3c4d5e6f7a8'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+activity_type_enum = sa.Enum(
+    'view_my_videos', 'view_all_videos', 'add_role', 'delete_role',
+    'add_player', 'delete_player', 'view_my_account', 'view_preferences',
+    name='activity_type_enum',
+)
+
 
 def upgrade() -> None:
-    op.execute("""
-        CREATE TYPE activity_type_enum AS ENUM (
-            'view_my_videos',
-            'view_all_videos',
-            'add_role',
-            'delete_role',
-            'add_player',
-            'delete_player',
-            'view_my_account',
-            'view_preferences'
-        )
-    """)
+    activity_type_enum.create(op.get_bind(), checkfirst=True)
     op.create_table(
         'user_activity',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -43,4 +38,4 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table('user_activity')
-    op.execute('DROP TYPE activity_type_enum')
+    activity_type_enum.drop(op.get_bind(), checkfirst=True)

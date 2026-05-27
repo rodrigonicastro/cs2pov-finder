@@ -6,8 +6,9 @@ from sqlalchemy import select, func, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from api.activity import log_activity
 from db.database import get_session
-from db.models import Video, User, UserRole, UserPlayer, MapRole, Map, MatchType
+from db.models import Video, User, UserRole, UserPlayer, MapRole, Map, MatchType, ActivityType
 
 router = APIRouter(prefix="/videos", tags=["videos"])
 
@@ -63,6 +64,7 @@ async def list_videos(
     t_role_id: list[int] = Query(default=[]),
     ct_role_id: list[int] = Query(default=[]),
     player_id: int | None = Query(None),
+    email: str | None = Query(None),
     session: AsyncSession = Depends(get_session),
 ):
     conditions = []
@@ -88,6 +90,12 @@ async def list_videos(
         .offset((page - 1) * page_size)
         .limit(page_size)
     )).scalars().all()
+
+    if email:
+        user = (await session.execute(select(User).where(User.email == email))).scalar_one_or_none()
+        if user:
+            await log_activity(session, user.id, ActivityType.view_all_videos)
+            await session.commit()
 
     return VideosResponse(videos=[VideoOut.from_orm(v) for v in rows], total=total)
 
@@ -139,5 +147,8 @@ async def my_videos(
         .offset((page - 1) * page_size)
         .limit(page_size)
     )).scalars().all()
+
+    await log_activity(session, user.id, ActivityType.view_my_videos)
+    await session.commit()
 
     return VideosResponse(videos=[VideoOut.from_orm(v) for v in rows], total=total)

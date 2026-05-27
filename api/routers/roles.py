@@ -5,8 +5,9 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from api.activity import log_activity
 from db.database import get_session
-from db.models import User, UserRole, MapRole
+from db.models import User, UserRole, MapRole, ActivityType
 
 router = APIRouter(prefix="/roles", tags=["roles"])
 
@@ -139,6 +140,7 @@ async def add_role(body: AddRoleRequest, session: AsyncSession = Depends(get_ses
         raise HTTPException(status_code=409, detail="Role already subscribed.")
 
     session.add(UserRole(user_id=user.id, map_role_id=body.mapRoleId))
+    await log_activity(session, user.id, ActivityType.add_role)
     await session.commit()
     return {"ok": True}
 
@@ -174,4 +176,5 @@ async def remove_role(
             UserRole.map_role_id == map_role_id,
         )
     )
+    await log_activity(session, user.id, ActivityType.delete_role)
     await session.commit()

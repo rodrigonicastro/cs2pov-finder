@@ -3,8 +3,9 @@ from pydantic import BaseModel
 from sqlalchemy import select, delete, distinct, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.activity import log_activity
 from db.database import get_session
-from db.models import User, UserPlayer, UserRole, Player, Video, MapRole, Map, MatchType
+from db.models import User, UserPlayer, UserRole, Player, Video, MapRole, Map, MatchType, ActivityType
 
 router = APIRouter(prefix="/players", tags=["players"])
 
@@ -128,6 +129,7 @@ async def add_player(body: AddPlayerRequest, session: AsyncSession = Depends(get
         raise HTTPException(status_code=409, detail="Player already subscribed.")
 
     session.add(UserPlayer(user_id=user.id, player_id=body.playerId))
+    await log_activity(session, user.id, ActivityType.add_player)
     await session.commit()
     return {"ok": True}
 
@@ -164,4 +166,5 @@ async def remove_player(
             UserPlayer.player_id == player_id,
         )
     )
+    await log_activity(session, user.id, ActivityType.delete_player)
     await session.commit()
