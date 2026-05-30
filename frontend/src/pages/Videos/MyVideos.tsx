@@ -50,7 +50,7 @@ export default function MyVideos() {
 
   useEffect(() => {
     const maps = filters.maps ?? []
-    Promise.all([fetchRolesBySide('T', maps), fetchRolesBySide('CT', maps)])
+    Promise.all([fetchRolesBySide('T', maps, email), fetchRolesBySide('CT', maps, email)])
       .then(([t, ct]) => { setTRoles(t); setCtRoles(ct) })
       .catch(() => { setTRoles([]); setCtRoles([]) })
     setSelectedTRoleIds([])

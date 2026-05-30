@@ -30,9 +30,10 @@ export interface MapSideRole {
   map: string
 }
 
-export async function fetchRolesBySide(side: string, maps: string[] = []): Promise<MapSideRole[]> {
+export async function fetchRolesBySide(side: string, maps: string[] = [], email?: string): Promise<MapSideRole[]> {
   const p = new URLSearchParams({ side })
   maps.forEach(m => p.append('map', m))
+  if (email) p.set('email', email)
   const res = await fetch(`${API_BASE}/api/roles/by-side?${p.toString()}`)
   if (!res.ok) throw new Error('Failed to fetch roles')
   return res.json()

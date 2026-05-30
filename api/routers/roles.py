@@ -53,12 +53,17 @@ class MapSideRoleWithMapOut(BaseModel):
 async def roles_by_side(
     side: str = Query(...),
     map: list[str] = Query(default=[]),
+    email: str | None = Query(default=None),
     session: AsyncSession = Depends(get_session),
 ):
     from db.models import Map as MapModel
     q = select(MapRole).join(MapModel).where(MapRole.side == side)
     if map:
         q = q.where(MapModel.name.in_(map))
+    if email:
+        user = await _get_user(email, session)
+        subscribed = select(UserRole.map_role_id).where(UserRole.user_id == user.id)
+        q = q.where(MapRole.id.in_(subscribed))
     q = q.options(selectinload(MapRole.map)).order_by(MapModel.name, MapRole.name)
     rows = (await session.execute(q)).scalars().all()
     return [MapSideRoleWithMapOut(mapRoleId=r.id, role=r.label, map=r.map.name) for r in rows]
