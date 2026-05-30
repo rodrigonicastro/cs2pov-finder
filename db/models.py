@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Index, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Index, String, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -154,7 +154,7 @@ class User(Base):
         Enum(Notify, name="notify_enum"), nullable=True
     )
     preferred_roles: Mapped[list[str]] = mapped_column(ARRAY(Text), server_default="{}")
-    registered_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    registered_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=False, server_default=text("now()"))
 
     user_roles: Mapped[list["UserRole"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     user_players: Mapped[list["UserPlayer"]] = relationship(back_populates="user", cascade="all, delete-orphan")
