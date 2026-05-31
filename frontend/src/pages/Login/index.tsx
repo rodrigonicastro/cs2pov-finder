@@ -167,7 +167,7 @@ export default function Login() {
       <div className={styles.wrapper}>
         <div className={styles.card}>
           <div className={styles.logo}>
-            <img src="/no_bg_icon.png" alt="CS2 POV Finder" className={styles.logoIcon} />
+            <div className={styles.logoIcon} role="img" aria-label="CS2 POV Finder" />
             <span className={styles.title}>CS2 POV Finder</span>
           </div>
 
@@ -224,7 +224,7 @@ export default function Login() {
     <div className={styles.wrapper}>
       <div className={styles.card}>
         <div className={styles.logo}>
-          <img src="/no_bg_icon.png" alt="CS2 POV Finder" className={styles.logoIcon} />
+          <div className={styles.logoIcon} role="img" aria-label="CS2 POV Finder" />
           <span className={styles.title}>CS2 POV Finder</span>
         </div>
 

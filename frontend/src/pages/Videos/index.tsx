@@ -22,7 +22,7 @@ export default function Videos() {
     <div className={styles.layout}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <img src="/no_bg_icon.png" alt="CS2 POV Finder" className={styles.logo} />
+          <div className={styles.logo} role="img" aria-label="CS2 POV Finder" />
           <nav className={styles.nav}>
             {TABS.map(tab => (
               <button

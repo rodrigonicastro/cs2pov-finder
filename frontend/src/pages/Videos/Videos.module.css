@@ -26,8 +26,18 @@
 }
 
 .logo {
+  width: 30px;
   height: 30px;
-  width: auto;
+  background-image: url('/no_bg_icon_black.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo {
+    background-image: url('/no_bg_icon_white.png');
+  }
 }
 
 .nav {
