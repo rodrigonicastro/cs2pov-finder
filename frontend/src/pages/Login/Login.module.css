@@ -30,16 +30,10 @@
 .logoIcon {
   width: 100px;
   height: 100px;
-  background-image: url('/no_bg_icon_black.png');
+  background-image: url('/no_bg_icon_white.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-}
-
-@media (prefers-color-scheme: dark) {
-  .logoIcon {
-    background-image: url('/no_bg_icon_white.png');
-  }
 }
 
 .title {
