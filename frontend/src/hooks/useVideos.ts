@@ -19,7 +19,7 @@ export function useVideos(page: number, pageSize: number, filters: VideoFilters 
       .then(data => { if (!cancelled) setState({ ...data, loading: false, error: null }) })
       .catch(err => { if (!cancelled) setState(s => ({ ...s, loading: false, error: err.message })) })
     return () => { cancelled = true }
-  }, [page, pageSize, filters.maps?.join(','), filters.matchType, filters.tRoleIds?.join(','), filters.ctRoleIds?.join(','), filters.playerId])
+  }, [page, pageSize, filters.maps?.join(','), filters.matchType, filters.tRoleIds?.join(','), filters.ctRoleIds?.join(','), filters.playerId, filters.titleKeywords?.join(',')])
 
   return state
 }

@@ -33,6 +33,7 @@ async def players_in_videos(
     match_type: str | None = Query(None),
     t_role_id: list[int] = Query(default=[]),
     ct_role_id: list[int] = Query(default=[]),
+    title_keyword: list[str] = Query(default=[]),
     session: AsyncSession = Depends(get_session),
 ):
     conditions = [Video.player_id.isnot(None)]
@@ -45,6 +46,8 @@ async def players_in_videos(
         conditions.append(Video.t_role_id.in_(t_role_id))
     if ct_role_id:
         conditions.append(Video.ct_role_id.in_(ct_role_id))
+    if title_keyword:
+        conditions.append(or_(*[Video.title.ilike(f'%{kw}%') for kw in title_keyword]))
 
     player_ids = select(distinct(Video.player_id)).where(and_(*conditions))
     rows = (await session.execute(

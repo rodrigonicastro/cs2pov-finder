@@ -13,9 +13,10 @@ const MATCH_TYPE_OPTIONS = [
 interface Props {
   filters: VideoFilters
   onChange: (filters: VideoFilters) => void
+  showMatchType?: boolean
 }
 
-export default function VideoFilterBar({ filters, onChange }: Props) {
+export default function VideoFilterBar({ filters, onChange, showMatchType = true }: Props) {
   const [maps, setMaps] = useState<string[]>([])
 
   useEffect(() => {
@@ -32,12 +33,14 @@ export default function VideoFilterBar({ filters, onChange }: Props) {
         onChange={vals => onChange({ ...filters, maps: vals.length ? (vals as string[]) : undefined })}
         placeholder="All maps"
       />
-      <SingleSelect
-        options={MATCH_TYPE_OPTIONS}
-        value={filters.matchType ?? ''}
-        onChange={val => onChange({ ...filters, matchType: val || undefined })}
-        placeholder="All match types"
-      />
+      {showMatchType && (
+        <SingleSelect
+          options={MATCH_TYPE_OPTIONS}
+          value={filters.matchType ?? ''}
+          onChange={val => onChange({ ...filters, matchType: val || undefined })}
+          placeholder="All match types"
+        />
+      )}
     </div>
   )
 }

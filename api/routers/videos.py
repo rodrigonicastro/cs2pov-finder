@@ -64,6 +64,7 @@ async def list_videos(
     t_role_id: list[int] = Query(default=[]),
     ct_role_id: list[int] = Query(default=[]),
     player_id: int | None = Query(None),
+    title_keyword: list[str] = Query(default=[]),
     email: str | None = Query(None),
     session: AsyncSession = Depends(get_session),
 ):
@@ -78,6 +79,8 @@ async def list_videos(
         conditions.append(Video.ct_role_id.in_(ct_role_id))
     if player_id is not None:
         conditions.append(Video.player_id == player_id)
+    if title_keyword:
+        conditions.append(or_(*[Video.title.ilike(f'%{kw}%') for kw in title_keyword]))
 
     where = and_(*conditions) if conditions else True
 

@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import UserMenu from '../../components/layout/UserMenu'
 import AllVideos from './AllVideos'
+import MajorVideos from './MajorVideos'
 import MyVideos from './MyVideos'
 import MyRoles from './MyRoles'
 import MyPlayers from './MyPlayers'
 import styles from './Videos.module.css'
 
-type Tab = 'my-videos' | 'my-roles' | 'my-players' | 'all-videos'
+type Tab = 'my-videos' | 'my-roles' | 'my-players' | 'all-videos' | 'major'
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'my-videos', label: 'My Videos' },
@@ -35,6 +36,12 @@ export default function Videos() {
             ))}
           </nav>
         </div>
+        <button
+          className={`${styles.majorButton} ${activeTab === 'major' ? styles.majorButtonActive : ''}`}
+          onClick={() => setActiveTab('major')}
+        >
+          IEM Cologne Major 2026
+        </button>
         <UserMenu />
       </header>
 
@@ -43,6 +50,7 @@ export default function Videos() {
         {activeTab === 'my-roles' && <MyRoles />}
         {activeTab === 'my-players' && <MyPlayers />}
         {activeTab === 'all-videos' && <AllVideos />}
+        {activeTab === 'major' && <MajorVideos />}
       </main>
     </div>
   )

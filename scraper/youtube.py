@@ -118,6 +118,8 @@ async def _role_ids(session: AsyncSession, player_id: int, map_id: int) -> tuple
 
 
 async def poll(session: AsyncSession) -> None:
+    from scraper.notifications import notify_users
+
     channel_ids = [c.strip() for c in os.environ.get("YOUTUBE_CHANNEL_IDS", "").split(",") if c.strip()]
     if not channel_ids:
         return
@@ -129,6 +131,7 @@ async def poll(session: AsyncSession) -> None:
     maps = (await session.execute(select(Map))).scalars().all()
 
     since = datetime.utcnow() - timedelta(days=90)
+    newly_inserted_yt_ids: list[str] = []
     log.info("Building YouTube client")
     youtube = await asyncio.to_thread(_client)
 
@@ -185,7 +188,15 @@ async def poll(session: AsyncSession) -> None:
             await session.commit()
             log.info("Finished %d/%d", i, len(new_videos))
             known_ids.add(v["youtube_video_id"])
+            newly_inserted_yt_ids.append(v["youtube_video_id"])
 
         log.info("Finished processing videos for channel %s:", channel_id)
+
+    if newly_inserted_yt_ids:
+        log.info("Sending notifications for %d new video(s)", len(newly_inserted_yt_ids))
+        new_video_ids = (await session.execute(
+            select(Video.id).where(Video.youtube_video_id.in_(newly_inserted_yt_ids))
+        )).scalars().all()
+        await notify_users(session, list(new_video_ids))
 
     log.info("Poll complete")

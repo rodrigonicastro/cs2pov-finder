@@ -12,6 +12,7 @@ export interface VideoFilters {
   tRoleIds?: number[]
   ctRoleIds?: number[]
   playerId?: number
+  titleKeywords?: string[]
 }
 
 function buildParams(page: number, pageSize: number, filters: VideoFilters) {
@@ -21,6 +22,7 @@ function buildParams(page: number, pageSize: number, filters: VideoFilters) {
   filters.tRoleIds?.forEach(id => p.append('t_role_id', String(id)))
   filters.ctRoleIds?.forEach(id => p.append('ct_role_id', String(id)))
   if (filters.playerId != null) p.set('player_id', String(filters.playerId))
+  filters.titleKeywords?.forEach(kw => p.append('title_keyword', kw))
   return p.toString()
 }
 
@@ -100,12 +102,14 @@ export async function fetchPlayersInVideos(
   matchType?: string,
   tRoleIds: number[] = [],
   ctRoleIds: number[] = [],
+  titleKeywords: string[] = [],
 ): Promise<PlayerOption[]> {
   const p = new URLSearchParams()
   maps.forEach(m => p.append('map', m))
   if (matchType) p.set('match_type', matchType)
   tRoleIds.forEach(id => p.append('t_role_id', String(id)))
   ctRoleIds.forEach(id => p.append('ct_role_id', String(id)))
+  titleKeywords.forEach(kw => p.append('title_keyword', kw))
   const res = await fetch(`${API_BASE}/api/players/in-videos?${p}`)
   if (!res.ok) throw new Error('Failed to fetch players')
   return res.json()

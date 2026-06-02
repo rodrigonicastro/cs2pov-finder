@@ -1,10 +1,5 @@
-import asyncio
-import os
 import secrets
-import smtplib
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
-from email.mime.text import MIMEText
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
@@ -13,38 +8,19 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import email_client
 from db.database import get_session
 from db.models import User, UserPlayer, Otp, ExperienceLevel, MatchTypePreference, Notify
 
-_email_pool = ThreadPoolExecutor(max_workers=2)
 _OTP_TTL_MINUTES = 10
 
 
-def _send_email_sync(to: str, code: str) -> None:
-    host = os.environ["SMTP_HOST"]
-    port = int(os.environ.get("SMTP_PORT", "587"))
-    user = os.environ["SMTP_USER"]
-    password = os.environ["SMTP_PASSWORD"]
-    from_addr = os.environ.get("SMTP_FROM", user)
-
-    msg = MIMEText(
-        f"Your CS2 POV Finder sign-in code is:\n\n{code}\n\n"
-        f"It expires in {_OTP_TTL_MINUTES} minutes. Do not share it.",
-        "plain",
-    )
-    msg["Subject"] = "Your sign-in code"
-    msg["From"] = from_addr
-    msg["To"] = to
-
-    with smtplib.SMTP(host, port) as smtp:
-        smtp.starttls()
-        smtp.login(user, password)
-        smtp.sendmail(from_addr, [to], msg.as_string())
-
-
 async def _send_otp_email(to: str, code: str) -> None:
-    loop = asyncio.get_event_loop()
-    await loop.run_in_executor(_email_pool, _send_email_sync, to, code)
+    body = (
+        f"Your CS2 POV Finder sign-in code is:\n\n{code}\n\n"
+        f"It expires in {_OTP_TTL_MINUTES} minutes. Do not share it."
+    )
+    await email_client.send(to, "Your sign-in code", body)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

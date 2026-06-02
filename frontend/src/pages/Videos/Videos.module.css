@@ -62,6 +62,32 @@
   background: #ffffff10;
 }
 
+.majorButton {
+  position: absolute;
+  left: 42%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #c8973a, #a67530);
+  border: none;
+  border-radius: 7px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.875rem;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.majorButton:hover {
+  opacity: 0.85;
+}
+
+.majorButtonActive {
+  outline: 2px solid #c8973a;
+  outline-offset: 2px;
+}
+
 .main {
   flex: 1;
 }
