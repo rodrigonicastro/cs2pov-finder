@@ -66,6 +66,7 @@ async def list_videos(
     player_id: int | None = Query(None),
     title_keyword: list[str] = Query(default=[]),
     email: str | None = Query(None),
+    source: str | None = Query(None),
     session: AsyncSession = Depends(get_session),
 ):
     conditions = []
@@ -97,7 +98,8 @@ async def list_videos(
     if email:
         user = (await session.execute(select(User).where(User.email == email))).scalar_one_or_none()
         if user:
-            await log_activity(session, user.id, ActivityType.view_all_videos)
+            activity = ActivityType.view_major_videos if source == "major" else ActivityType.view_all_videos
+            await log_activity(session, user.id, activity)
             await session.commit()
 
     return VideosResponse(videos=[VideoOut.from_orm(v) for v in rows], total=total)

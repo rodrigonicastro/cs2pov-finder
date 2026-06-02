@@ -9,13 +9,13 @@ interface State {
   error: string | null
 }
 
-export function useVideos(page: number, pageSize: number, filters: VideoFilters = {}, email?: string): State {
+export function useVideos(page: number, pageSize: number, filters: VideoFilters = {}, email?: string, source?: string): State {
   const [state, setState] = useState<State>({ videos: [], total: 0, loading: true, error: null })
 
   useEffect(() => {
     let cancelled = false
     setState(s => ({ ...s, loading: true, error: null }))
-    fetchVideos(page, pageSize, filters, email)
+    fetchVideos(page, pageSize, filters, email, source)
       .then(data => { if (!cancelled) setState({ ...data, loading: false, error: null }) })
       .catch(err => { if (!cancelled) setState(s => ({ ...s, loading: false, error: err.message })) })
     return () => { cancelled = true }

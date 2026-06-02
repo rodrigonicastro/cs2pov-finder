@@ -40,6 +40,7 @@ class Notify(enum.Enum):
 class ActivityType(enum.Enum):
     view_my_videos = "view_my_videos"
     view_all_videos = "view_all_videos"
+    view_major_videos = "view_major_videos"
     add_role = "add_role"
     delete_role = "delete_role"
     add_player = "add_player"

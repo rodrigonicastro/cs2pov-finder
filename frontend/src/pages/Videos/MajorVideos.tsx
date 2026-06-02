@@ -25,7 +25,7 @@ export default function MajorVideos() {
   const [selectedCtRoleIds, setSelectedCtRoleIds] = useState<number[]>([])
   const [players, setPlayers] = useState<PlayerOption[]>([])
 
-  const { videos, total, loading, error } = useVideos(page, PAGE_SIZE, filters, getEmail())
+  const { videos, total, loading, error } = useVideos(page, PAGE_SIZE, filters, getEmail(), 'major')
 
   const mapsKey = filters.maps?.join(',') ?? ''
   const playerFilterKey = [mapsKey, selectedTRoleIds.join(','), selectedCtRoleIds.join(',')].join('|')
