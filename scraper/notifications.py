@@ -6,7 +6,7 @@ from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import email_client
-from db.models import User, UserRole, UserPlayer, Video, Notify
+from db.models import User, UserRole, UserPlayer, Video, Notify, MatchType, MatchTypePreference
 
 log = logging.getLogger(__name__)
 
@@ -39,6 +39,12 @@ async def notify_users(session: AsyncSession, new_video_ids: list[int]) -> None:
         subscribed_roles = select(UserRole.map_role_id).where(UserRole.user_id == user.id)
         subscribed_players = select(UserPlayer.player_id).where(UserPlayer.user_id == user.id)
 
+        match_type_conditions = []
+        if user.match_type_preference == MatchTypePreference.faceit:
+            match_type_conditions.append(Video.match_type == MatchType.FACEIT)
+        elif user.match_type_preference == MatchTypePreference.tournament:
+            match_type_conditions.append(Video.match_type == MatchType.TOURNAMENT)
+
         matching_count = (await session.execute(
             select(Video.id).where(
                 Video.id.in_(new_video_ids),
@@ -47,6 +53,7 @@ async def notify_users(session: AsyncSession, new_video_ids: list[int]) -> None:
                     Video.ct_role_id.in_(subscribed_roles),
                     Video.player_id.in_(subscribed_players),
                 ),
+                *match_type_conditions,
             )
         )).scalars().all()
 
