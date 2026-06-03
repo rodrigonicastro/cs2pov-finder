@@ -31,6 +31,7 @@ async def all_players(session: AsyncSession = Depends(get_session)):
 async def players_in_videos(
     map: list[str] = Query(default=[]),
     match_type: str | None = Query(None),
+    exclude_match_type: str | None = Query(None),
     t_role_id: list[int] = Query(default=[]),
     ct_role_id: list[int] = Query(default=[]),
     title_keyword: list[str] = Query(default=[]),
@@ -42,6 +43,8 @@ async def players_in_videos(
         conditions.append(or_(Video.t_role_id.in_(map_role_ids), Video.ct_role_id.in_(map_role_ids)))
     if match_type:
         conditions.append(Video.match_type == MatchType[match_type])
+    if exclude_match_type:
+        conditions.append(Video.match_type != MatchType[exclude_match_type])
     if t_role_id:
         conditions.append(Video.t_role_id.in_(t_role_id))
     if ct_role_id:

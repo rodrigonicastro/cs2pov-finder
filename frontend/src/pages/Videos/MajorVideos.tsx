@@ -10,6 +10,7 @@ import styles from './AllVideos.module.css'
 
 const PAGE_SIZE = 20
 const MAJOR_KEYWORDS = ['major', 'cologne']
+const EXCLUDE_MATCH_TYPE = 'FACEIT'
 
 function roleLabel(r: MapSideRole, multiMap: boolean) {
   const name = r.role.replace(/_/g, ' ').toUpperCase()
@@ -18,7 +19,7 @@ function roleLabel(r: MapSideRole, multiMap: boolean) {
 
 export default function MajorVideos() {
   const [page, setPage] = useState(1)
-  const [filters, setFilters] = useState<VideoFilters>({ titleKeywords: MAJOR_KEYWORDS })
+  const [filters, setFilters] = useState<VideoFilters>({ titleKeywords: MAJOR_KEYWORDS, excludeMatchType: EXCLUDE_MATCH_TYPE })
   const [tRoles, setTRoles] = useState<MapSideRole[]>([])
   const [ctRoles, setCtRoles] = useState<MapSideRole[]>([])
   const [selectedTRoleIds, setSelectedTRoleIds] = useState<number[]>([])
@@ -31,7 +32,7 @@ export default function MajorVideos() {
   const playerFilterKey = [mapsKey, selectedTRoleIds.join(','), selectedCtRoleIds.join(',')].join('|')
 
   useEffect(() => {
-    fetchPlayersInVideos(filters.maps ?? [], undefined, selectedTRoleIds, selectedCtRoleIds, MAJOR_KEYWORDS)
+    fetchPlayersInVideos(filters.maps ?? [], undefined, selectedTRoleIds, selectedCtRoleIds, MAJOR_KEYWORDS, EXCLUDE_MATCH_TYPE)
       .then(ps => {
         setPlayers(ps)
         if (filters.playerId != null && !ps.some(p => p.playerId === filters.playerId)) {
@@ -57,7 +58,7 @@ export default function MajorVideos() {
       setSelectedCtRoleIds([])
       next = { ...next, tRoleIds: undefined, ctRoleIds: undefined }
     }
-    setFilters({ ...next, titleKeywords: MAJOR_KEYWORDS })
+    setFilters({ ...next, titleKeywords: MAJOR_KEYWORDS, excludeMatchType: EXCLUDE_MATCH_TYPE })
     setPage(1)
   }
 

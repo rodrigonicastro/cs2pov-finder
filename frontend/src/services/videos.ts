@@ -9,6 +9,7 @@ export interface VideoPage {
 export interface VideoFilters {
   maps?: string[]
   matchType?: string
+  excludeMatchType?: string
   tRoleIds?: number[]
   ctRoleIds?: number[]
   playerId?: number
@@ -19,6 +20,7 @@ function buildParams(page: number, pageSize: number, filters: VideoFilters) {
   const p = new URLSearchParams({ page: String(page), page_size: String(pageSize) })
   filters.maps?.forEach(m => p.append('map', m))
   if (filters.matchType) p.set('match_type', filters.matchType)
+  if (filters.excludeMatchType) p.set('exclude_match_type', filters.excludeMatchType)
   filters.tRoleIds?.forEach(id => p.append('t_role_id', String(id)))
   filters.ctRoleIds?.forEach(id => p.append('ct_role_id', String(id)))
   if (filters.playerId != null) p.set('player_id', String(filters.playerId))
@@ -104,10 +106,12 @@ export async function fetchPlayersInVideos(
   tRoleIds: number[] = [],
   ctRoleIds: number[] = [],
   titleKeywords: string[] = [],
+  excludeMatchType?: string,
 ): Promise<PlayerOption[]> {
   const p = new URLSearchParams()
   maps.forEach(m => p.append('map', m))
   if (matchType) p.set('match_type', matchType)
+  if (excludeMatchType) p.set('exclude_match_type', excludeMatchType)
   tRoleIds.forEach(id => p.append('t_role_id', String(id)))
   ctRoleIds.forEach(id => p.append('ct_role_id', String(id)))
   titleKeywords.forEach(kw => p.append('title_keyword', kw))
