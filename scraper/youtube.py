@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.models import Map, MapRole, MatchType, Player, PlayerRole, Side, Video
 
 _MATCH_TYPE_KEYWORDS: list[tuple[MatchType, list[str]]] = [
-    (MatchType.FACEIT, ["faceit", "fpl", "faceit pro league", "elo", "soloq", "duo", "matchmaking", "premier", " mm ", "valve mm", "w/", "perfect world arena"]),
+    (MatchType.FACEIT, ["faceit", "fpl", "faceit pro league", " elo", "soloq", "duo", "matchmaking", "premier", " mm ", "valve mm", "w/", "perfect world arena"]),
     (MatchType.TOURNAMENT, ["major", "esl", "blast", "pgl", "iem", "pro league", "epl", "tournament", "finals", "championship", "cup", "qualifier", "pinnacle", "season", "cac", "cct", "ferjee", "stake", "draculan", "esea"]),
 ]
 
