@@ -10,11 +10,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/videos" element={
-          <ProtectedRoute>
-            <Videos />
-          </ProtectedRoute>
-        } />
+        <Route path="/videos" element={<Videos />} />
         <Route path="/preferences" element={
           <ProtectedRoute>
             <Preferences />
@@ -25,7 +21,7 @@ export default function App() {
             <Account />
           </ProtectedRoute>
         } />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/videos" replace />} />
       </Routes>
     </BrowserRouter>
   )

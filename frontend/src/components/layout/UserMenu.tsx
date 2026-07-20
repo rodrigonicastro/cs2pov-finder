@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getUsername, clearSession } from '../../utils/auth'
+import { getEmail, getUsername, clearSession } from '../../utils/auth'
 import styles from './UserMenu.module.css'
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+  const email = getEmail()
   const username = getUsername() || 'Account'
 
   useEffect(() => {
@@ -21,7 +22,21 @@ export default function UserMenu() {
 
   function logout() {
     clearSession()
-    navigate('/login')
+    navigate('/videos')
+  }
+
+  if (!email) {
+    return (
+      <div className={styles.wrapper}>
+        <span className={styles.reportHint}>
+          Report any issues and bugs like missing and/or incorrect players, maps, roles to{' '}
+          <a href="mailto:cs2povfinder@gmail.com" className={styles.reportLink}>
+            cs2povfinder@gmail.com
+          </a>
+        </span>
+        <button className={styles.loginTrigger} onClick={() => navigate('/login')}>Log In</button>
+      </div>
+    )
   }
 
   return (

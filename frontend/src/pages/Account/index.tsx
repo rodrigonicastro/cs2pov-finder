@@ -87,7 +87,7 @@ export default function Account() {
         method: 'DELETE',
       })
       clearSession()
-      navigate('/login')
+      navigate('/videos')
     } catch {
       setError('Could not reach the server.')
       setDeleting(false)

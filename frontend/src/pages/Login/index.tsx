@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import RegisterQuestionnaire from './RegisterQuestionnaire'
 import MapRoleSelector from './MapRoleSelector'
 import { saveSession, getEmail } from '../../utils/auth'
@@ -15,7 +15,8 @@ function isValidEmail(value: string) {
 }
 
 export default function Login() {
-  const [mode, setMode] = useState<Mode>('login')
+  const [searchParams] = useSearchParams()
+  const [mode, setMode] = useState<Mode>(searchParams.get('mode') === 'register' ? 'register' : 'login')
   const [step, setStep] = useState<Step>('email')
 
   const [email, setEmail] = useState('')
