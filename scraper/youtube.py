@@ -192,11 +192,11 @@ async def poll(session: AsyncSession) -> None:
 
         log.info("Finished processing videos for channel %s:", channel_id)
 
-    # if newly_inserted_yt_ids:
-    #     log.info("Sending notifications for %d new video(s)", len(newly_inserted_yt_ids))
-    #     new_video_ids = (await session.execute(
-    #         select(Video.id).where(Video.youtube_video_id.in_(newly_inserted_yt_ids))
-    #     )).scalars().all()
-    #     await notify_users(session, list(new_video_ids))
+    if newly_inserted_yt_ids:
+        log.info("Sending notifications for %d new video(s)", len(newly_inserted_yt_ids))
+        new_video_ids = (await session.execute(
+            select(Video.id).where(Video.youtube_video_id.in_(newly_inserted_yt_ids))
+        )).scalars().all()
+        await notify_users(session, list(new_video_ids))
 
     log.info("Poll complete")
