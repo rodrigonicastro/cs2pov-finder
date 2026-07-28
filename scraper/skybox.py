@@ -14,7 +14,7 @@ _BATCH_SIZE = 500  # stay well under asyncpg's 32767 parameter limit
 _API_URL = "https://edge.skybox.gg/api"
 _PAGE_SIZE = 50
 _LOOKBACK_DAYS = 90
-_KNOWN_MAPS = {"ancient", "anubis", "dust2", "inferno", "mirage", "nuke", "overpass"}
+_KNOWN_MAPS = {"ancient", "anubis", "dust2", "inferno", "mirage", "nuke", "overpass", "cache"}
 
 _QUERY = """
 query leaderboards(

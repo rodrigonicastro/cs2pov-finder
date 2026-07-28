@@ -12,7 +12,8 @@ MAPS = [
     "MIRAGE",
     "ANUBIS",
     "DUST2",
-    "NUKE"
+    "NUKE",
+    "CACHE"
 ]
 
 
