@@ -20,9 +20,12 @@ log = logging.getLogger(__name__)
 
 async def _run_skybox() -> None:
     log.info("Skybox scraper starting")
-    async with AsyncSessionLocal() as session:
-        await skybox.scrape(session)
-    log.info("Skybox scraper done")
+    try:
+        async with AsyncSessionLocal() as session:
+            await skybox.scrape(session)
+        log.info("Skybox scraper done")
+    except Exception:
+        log.exception("Skybox scraper failed")
 
 
 async def _run_youtube() -> None:

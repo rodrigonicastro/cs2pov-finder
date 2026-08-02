@@ -88,15 +88,25 @@ async def _fetch_page(client: httpx.AsyncClient, token: str, page: int, since: s
     return response.json()
 
 
+def _leaderboard(payload: dict, page: int) -> dict:
+    data = payload.get("data") or {}
+    leaderboard = data.get("leaderboard")
+    if leaderboard is None:
+        errors = payload.get("errors")
+        message = errors[0]["message"] if errors else "no 'errors' field in response"
+        raise RuntimeError(f"Skybox API returned null leaderboard on page {page}: {message}")
+    return leaderboard
+
+
 async def _fetch_all_entries(token: str, since: str, team_id: str | None = None, steam_ids: list[str] | None = None) -> list[dict]:
     async with httpx.AsyncClient(timeout=30) as client:
         first = await _fetch_page(client, token, 1, since, team_id, steam_ids)
-        leaderboard = first["data"]["leaderboard"]
+        leaderboard = _leaderboard(first, 1)
         entries: list[dict] = list(leaderboard["entries"])
         total_pages = math.ceil(leaderboard["totalEntries"] / _PAGE_SIZE)
         for page in range(2, total_pages + 1):
             data = await _fetch_page(client, token, page, since, team_id, steam_ids)
-            entries.extend(data["data"]["leaderboard"]["entries"])
+            entries.extend(_leaderboard(data, page)["entries"])
     return entries
 
 
