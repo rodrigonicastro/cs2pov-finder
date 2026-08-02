@@ -8,6 +8,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'api/**'
+      - 'db/**'
+      - 'email_client.py'
+      - 'alembic.ini'
+      - 'requirements.txt'
+      - 'startup.sh'
+      - '.github/workflows/main_cs2-pov-finder-api.yml'
   workflow_dispatch:
 
 jobs:

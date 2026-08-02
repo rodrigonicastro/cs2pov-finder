@@ -8,6 +8,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'scraper/**'
+      - 'db/**'
+      - 'email_client.py'
+      - 'alembic.ini'
+      - 'requirements.txt'
+      - 'startup_scheduler.sh'
+      - '.github/workflows/main_cs2-pov-finder-scheduler.yml'
   workflow_dispatch:
 
 jobs:

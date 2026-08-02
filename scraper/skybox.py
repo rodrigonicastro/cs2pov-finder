@@ -94,6 +94,8 @@ def _leaderboard(payload: dict, page: int) -> dict:
     if leaderboard is None:
         errors = payload.get("errors")
         message = errors[0]["message"] if errors else "no 'errors' field in response"
+        if message == "unauthenticated":
+            raise RuntimeError("Skybox API returned 'unauthenticated' — update SKYBOX_API_TOKEN in your env.")
         raise RuntimeError(f"Skybox API returned null leaderboard on page {page}: {message}")
     return leaderboard
 
@@ -166,15 +168,37 @@ async def scrape(session: AsyncSession, team_id: str | None = None, steam_ids: l
         team = entry["publicMatchTeams"][0]["name"] if entry["publicMatchTeams"] else None
         player_rows.append({"steam_id": sid, "name": name, "team": team})
 
-    for i in range(0, len(player_rows), _BATCH_SIZE):
-        stmt = insert(Player).values(player_rows[i:i + _BATCH_SIZE])
+    # `name` is unique separately from `steam_id` (used for YouTube title matching), so a
+    # handle already registered under a different (or no) steam_id can't go through the
+    # steam_id-keyed upsert below without violating uq_players_name. Route those to the
+    # existing player instead of inserting a conflicting row.
+    existing_by_name: dict[str, tuple[int, str | None]] = {
+        name: (pid, steam_id)
+        for pid, name, steam_id in (
+            await session.execute(
+                select(Player.id, Player.name, Player.steam_id).where(Player.name.in_(seen_names))
+            )
+        ).all()
+    }
+
+    name_conflict_steam_ids: dict[str, int] = {}
+    rows_to_upsert: list[dict] = []
+    for row in player_rows:
+        existing = existing_by_name.get(row["name"])
+        if existing and existing[1] != row["steam_id"]:
+            name_conflict_steam_ids[row["steam_id"]] = existing[0]
+            continue
+        rows_to_upsert.append(row)
+
+    for i in range(0, len(rows_to_upsert), _BATCH_SIZE):
+        stmt = insert(Player).values(rows_to_upsert[i:i + _BATCH_SIZE])
         await session.execute(
             stmt.on_conflict_do_update(
                 index_elements=["steam_id"],
                 set_={"name": stmt.excluded.name, "team": stmt.excluded.team, "updated_at": now},
             )
         )
-    if player_rows:
+    if rows_to_upsert:
         await session.flush()
 
     # --- 4. Load players index: steam_id -> player.id ---
@@ -186,6 +210,7 @@ async def scrape(session: AsyncSession, team_id: str | None = None, steam_ids: l
             )
         ).all()
     }
+    players_index.update(name_conflict_steam_ids)
 
     # --- 5. Upsert player_roles ---
     player_role_rows: list[dict] = []
