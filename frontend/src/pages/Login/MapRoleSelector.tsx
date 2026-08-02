@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { MapSideRole } from '../../services/videos'
 import { fetchRolesBySide } from '../../services/videos'
 import { API_BASE } from '../../config'
+import { ACTIVE_MAPS } from '../../constants/maps'
 import styles from './MapRoleSelector.module.css'
 
 function formatRole(name: string): string {
@@ -28,7 +29,7 @@ export default function MapRoleSelector({ email, onBack, onDone }: Props) {
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    Promise.all([fetchRolesBySide('T'), fetchRolesBySide('CT')]).then(([tAll, ctAll]) => {
+    Promise.all([fetchRolesBySide('T', ACTIVE_MAPS), fetchRolesBySide('CT', ACTIVE_MAPS)]).then(([tAll, ctAll]) => {
       const mapNames = [...new Set([...tAll, ...ctAll].map(r => r.map))].sort()
       const built: MapData[] = mapNames.map(name => ({
         name,
