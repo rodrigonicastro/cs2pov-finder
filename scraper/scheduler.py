@@ -53,7 +53,7 @@ async def main() -> None:
     # Run YouTube once immediately on startup so we don't wait up to an hour
     await _run_youtube()
 
-    await _run_skybox()
+    # await _run_skybox()
 
     try:
         await asyncio.Event().wait()

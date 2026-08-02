@@ -3,7 +3,6 @@ import UserMenu from '../../components/layout/UserMenu'
 import AuthPrompt from '../../components/ui/AuthPrompt'
 import SurveyModal from '../../components/ui/SurveyModal'
 import AllVideos from './AllVideos'
-import MajorVideos from './MajorVideos'
 import MyVideos from './MyVideos'
 import MyRoles from './MyRoles'
 import MyPlayers from './MyPlayers'
@@ -11,7 +10,7 @@ import { getEmail } from '../../utils/auth'
 import { API_BASE } from '../../config'
 import styles from './Videos.module.css'
 
-type Tab = 'my-videos' | 'my-roles' | 'my-players' | 'all-videos' | 'major'
+type Tab = 'my-videos' | 'my-roles' | 'my-players' | 'all-videos'
 
 const GATED_TABS: Tab[] = ['my-videos', 'my-roles', 'my-players']
 
@@ -68,12 +67,6 @@ export default function Videos() {
             ))}
           </nav>
         </div>
-        <button
-          className={`${styles.majorButton} ${activeTab === 'major' ? styles.majorButtonActive : ''}`}
-          onClick={() => setActiveTab('major')}
-        >
-          IEM Cologne Major 2026
-        </button>
         <UserMenu />
       </header>
 
@@ -88,7 +81,6 @@ export default function Videos() {
           </>
         )}
         {activeTab === 'all-videos' && <AllVideos />}
-        {activeTab === 'major' && <MajorVideos />}
       </main>
 
       {showSurvey && <SurveyModal email={email} onClose={dismissSurvey} onSubmit={dismissSurvey} />}
